@@ -457,12 +457,18 @@ void hrd_connect_qp(struct hrd_ctrl_blk* cb, int n,
   struct ibv_qp_attr conn_attr;
   memset(&conn_attr, 0, sizeof(struct ibv_qp_attr));
   conn_attr.qp_state = IBV_QPS_RTR;
-  conn_attr.path_mtu = IBV_MTU_4096;
+  conn_attr.path_mtu = IBV_MTU_1024; //XXX
   conn_attr.dest_qp_num = remote_qp_attr->qpn;
   conn_attr.rq_psn = HRD_DEFAULT_PSN;
 
-  conn_attr.ah_attr.is_global = 0;
-  conn_attr.ah_attr.dlid = remote_qp_attr->lid;
+  /*
+   * HACK XXX
+   * ROCE
+   */
+  conn_attr.ah_attr.is_global = 1;
+  conn_attr.ah_attr.dlid = 0;
+  //conn_attr.ah_attr.is_global = 0;
+  //conn_attr.ah_attr.dlid = remote_qp_attr->lid;
   conn_attr.ah_attr.sl = 0;
   conn_attr.ah_attr.src_path_bits = 0;
   conn_attr.ah_attr.port_num = cb->dev_port_id; /* Local port! */
@@ -523,8 +529,10 @@ void hrd_connect_qp(struct hrd_ctrl_blk* cb, int n,
   conn_attr.dest_qp_num = remote_qp_attr->qpn;
   conn_attr.rq_psn = HRD_DEFAULT_PSN;
 
-  conn_attr.ah_attr.is_global = 0;
-  conn_attr.ah_attr.dlid = remote_qp_attr->lid;
+  conn_attr.ah_attr.is_global = 1;
+  conn_attr.ah_attr.dlid = 0;
+  //conn_attr.ah_attr.is_global = 0;
+  //conn_attr.ah_attr.dlid = remote_qp_attr->lid;
   conn_attr.ah_attr.sl = 0;
   conn_attr.ah_attr.src_path_bits = 0;
   conn_attr.ah_attr.port_num = cb->dev_port_id; /* Local port! */

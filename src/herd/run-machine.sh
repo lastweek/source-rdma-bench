@@ -5,7 +5,7 @@ function blue() {
 	echo "${es}$1${ee}"
 }
 
-export HRD_REGISTRY_IP="137.110.222.245"
+export HRD_REGISTRY_IP="137.110.222.243"
 export MLX5_SINGLE_THREADED=1
 export MLX4_SINGLE_THREADED=1
 
