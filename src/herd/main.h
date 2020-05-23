@@ -18,7 +18,8 @@
 #define HERD_LOG_CAP (1024 * 1024 * 1024)
 
 #define HERD_NUM_KEYS (8 * 1024 * 1024)
-#define HERD_VALUE_SIZE 32
+
+#define HERD_VALUE_SIZE  MICA_MAX_VALUE
 
 /* Request sizes */
 #define HERD_GET_REQ_SIZE (16 + 1) /* 16 byte key + opcode */
@@ -29,16 +30,16 @@
 /* Configuration options */
 #define MAX_SERVER_PORTS 2
 
-#define NUM_WORKERS 8
+#define NUM_WORKERS 12
 
-#define NUM_CLIENTS 12
+#define NUM_CLIENTS 8
 
 /* Performance options */
-#define WINDOW_SIZE 32 /* Outstanding requests kept by each client */
+#define WINDOW_SIZE 1 /* Outstanding requests kept by each client */
 #define NUM_UD_QPS 1   /* Number of UD QPs per port */
 #define USE_POSTLIST 1
 
-#define UNSIG_BATCH 64 /* XXX Check if increasing this helps */
+#define UNSIG_BATCH 2
 #define UNSIG_BATCH_ (UNSIG_BATCH - 1)
 
 /* SHM key for the 1st request region created by master. ++ for other RRs.*/

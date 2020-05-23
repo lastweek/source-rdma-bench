@@ -115,27 +115,29 @@ void* run_client(void* arg) {
   clock_gettime(CLOCK_REALTIME, &start);
  
 
-  /*
-   * HACK XXX
-   */
-#if 1
-  if (clt_gid != 0)
-	  return NULL;
-#endif
-
   /* Fill the RECV queue */
   for (i = 0; i < WINDOW_SIZE; i++) {
     hrd_post_dgram_recv(cb->dgram_qp[0], (void*)cb->dgram_buf, DGRAM_BUF_SIZE,
                         cb->dgram_buf_mr->lkey);
   }
 
+  /*
+   * HACK XXX
+   */
+#if 1
+  if (clt_gid != 0) {
+     sleep(100000);
+  }
+#endif
+
   while (1) {
     if (rolling_iter >= K_512) {
       clock_gettime(CLOCK_REALTIME, &end);
       double seconds = (end.tv_sec - start.tv_sec) +
                        (double)(end.tv_nsec - start.tv_nsec) / 1000000000;
-      printf("main: Client %d: %.2f IOPS. nb_tx = %lld\n", clt_gid,
-             K_512 / seconds, nb_tx);
+
+      printf("main: Client %d: %.2f IOPS. nb_tx = %lld avg %lf ns\n", clt_gid,
+             K_512 / seconds, nb_tx, (seconds / K_512) * 1000000000);
 
       rolling_iter = 0;
 
@@ -163,7 +165,9 @@ void* run_client(void* arg) {
     }
 
     wn = hrd_fastrand(&seed) % NUM_WORKERS; /* Choose a worker */
-    int is_update = (hrd_fastrand(&seed) % 100 < update_percentage) ? 1 : 0;
+
+    //int is_update = (hrd_fastrand(&seed) % 100 < update_percentage) ? 1 : 0;
+    int is_update = 1;
 
     /* Forge the HERD request */
     key_i = hrd_fastrand(&seed) % HERD_NUM_KEYS; /* Choose a key */
@@ -185,14 +189,20 @@ void* run_client(void* arg) {
     if ((nb_tx & UNSIG_BATCH_) == UNSIG_BATCH_) {
       hrd_poll_cq(cb->conn_cq[0], 1, wc);
     }
-    wr.send_flags |= IBV_SEND_INLINE;
+
+    // Why always INLINE??? XXX
+    //wr.send_flags |= IBV_SEND_INLINE;
 
     wr.wr.rdma.remote_addr = mstr_qp->buf_addr + OFFSET(wn, clt_gid, ws[wn]) *
                                                      sizeof(struct mica_op);
     wr.wr.rdma.rkey = mstr_qp->rkey;
 
     ret = ibv_post_send(cb->conn_qp[0], &wr, &bad_send_wr);
-    CPE(ret, "ibv_post_send error", ret);
+    if (ret) {
+    	perror("post_send");
+	exit(0);
+    }
+    //if (ret, "ibv_post_send error", ret);
     // printf("Client %d: sending request index %lld\n", clt_gid, nb_tx);
 
     rolling_iter++;

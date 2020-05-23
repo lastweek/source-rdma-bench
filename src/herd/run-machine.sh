@@ -30,4 +30,4 @@ sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
 	--num-client-ports 1 \
 	--is-client 1 \
 	--update-percentage 0 \
-	--machine-id $1 &
+	--machine-id $1
