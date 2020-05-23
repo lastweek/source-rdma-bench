@@ -170,7 +170,8 @@ void* run_client(void* arg) {
     int is_update = 1;
 
     /* Forge the HERD request */
-    key_i = hrd_fastrand(&seed) % HERD_NUM_KEYS; /* Choose a key */
+    //key_i = hrd_fastrand(&seed) % HERD_NUM_KEYS; /* Choose a key */
+    key_i = 1;
 
     *(uint128*)req_buf = CityHash128((char*)&key_arr[key_i], 4);
     req_buf->opcode = is_update ? HERD_OP_PUT : HERD_OP_GET;

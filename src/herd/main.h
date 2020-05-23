@@ -17,9 +17,10 @@
 #define HERD_NUM_BKTS (2 * 1024 * 1024)
 #define HERD_LOG_CAP (1024 * 1024 * 1024)
 
-#define HERD_NUM_KEYS (8 * 1024 * 1024)
+//#define HERD_NUM_KEYS (8 * 1024 * 1024)
+#define HERD_NUM_KEYS (10000)
 
-#define HERD_VALUE_SIZE  MICA_MAX_VALUE
+#define HERD_VALUE_SIZE  16
 
 /* Request sizes */
 #define HERD_GET_REQ_SIZE (16 + 1) /* 16 byte key + opcode */

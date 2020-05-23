@@ -20,10 +20,8 @@
 #define MICA_RESP_GET_FAIL 115
 
 /* Ensure that a mica_op is cacheline aligned */
-//#define MICA_MAX_VALUE \
-//  (1024 - (sizeof(struct mica_key) + sizeof(uint8_t) + sizeof(uint8_t)))
-
-#define MICA_MAX_VALUE 256
+#define MICA_MAX_VALUE \
+   (1024 - (sizeof(struct mica_key) + sizeof(uint8_t) + sizeof(uint8_t)))
 
 #define MICA_LOG_BITS 40
 
@@ -58,7 +56,7 @@ struct mica_op {
   uint8_t opcode;
   uint8_t val_len;
   uint8_t value[MICA_MAX_VALUE];
-};
+} __attribute__((aligned(64)));
 
 struct mica_slot {
   uint32_t in_use : 1;
