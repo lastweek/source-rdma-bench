@@ -2,6 +2,12 @@
 #include "main.h"
 #include "mica.h"
 
+/*
+ * HACK XXX
+ * there is another on at ../libhrd/hrd_conn.c
+ */
+#define SGID_INDEX 1
+
 void* run_worker(void* arg) {
   int i, ret;
   struct thread_params params = *(struct thread_params*)arg;
@@ -72,14 +78,33 @@ void* run_worker(void* arg) {
     printf("main: Worker %d found client %d of %d clients. Client LID: %d\n",
            wrkr_lid, i, NUM_CLIENTS, clt_qp[i]->lid);
 
+    /*
+     * HACK XXX
+     */
     struct ibv_ah_attr ah_attr = {
-        .is_global = 0,
-        .dlid = clt_qp[i]->lid,
+
+        //.is_global = 0,
+        .is_global = 1,
+
+        //.dlid = clt_qp[i]->lid,
+        .dlid = 0,
+
         .sl = 0,
         .src_path_bits = 0,
+
         /* port_num (> 1): device-local port for responses to this client */
         .port_num = local_port_i + 1,
+
+	.grh = {
+		.dgid = clt_qp[i]->remote_gid,
+		.sgid_index = SGID_INDEX,
+		.hop_limit = 255,
+	},
     };
+
+    fprintf(stderr, "GID: Interface id = %lld subnet prefix = %lld\n",
+        (long long) clt_qp[i]->remote_gid.global.interface_id,
+        (long long) clt_qp[i]->remote_gid.global.subnet_prefix);
 
     ah[i] = ibv_create_ah(cb[cb_i]->pd, &ah_attr);
     assert(ah[i] != NULL);

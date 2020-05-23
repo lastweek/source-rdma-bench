@@ -113,6 +113,15 @@ void* run_client(void* arg) {
 
   struct timespec start, end;
   clock_gettime(CLOCK_REALTIME, &start);
+ 
+
+  /*
+   * HACK XXX
+   */
+#if 1
+  if (clt_gid != 0)
+	  return NULL;
+#endif
 
   /* Fill the RECV queue */
   for (i = 0; i < WINDOW_SIZE; i++) {
