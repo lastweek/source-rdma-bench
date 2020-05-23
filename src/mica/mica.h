@@ -19,9 +19,10 @@
 #define MICA_RESP_GET_SUCCESS 114
 #define MICA_RESP_GET_FAIL 115
 
+#define __MAX_SIZE	4
+
 /* Ensure that a mica_op is cacheline aligned */
-#define MICA_MAX_VALUE \
-   (1024 - (sizeof(struct mica_key) + sizeof(uint8_t) + sizeof(uint8_t)))
+#define MICA_MAX_VALUE	__MAX_SIZE
 
 #define MICA_LOG_BITS 40
 
