@@ -20,6 +20,19 @@
 #include <time.h>
 #include "hrd_sizes.h"
 
+
+/*
+ * HACK XXX
+ * FOR ROCE PORT
+ */
+#define SGID_INDEX 1
+#if 0
+# define LINK_MODE_ROCE
+#endif
+
+
+
+
 #define HRD_Q_DEPTH 128 /* Depth of all queues */
 
 #define HRD_DEFAULT_PSN 3185 /* PSN for all queues */
@@ -209,6 +222,7 @@ static inline uint32_t hrd_fastrand(uint64_t* seed) {
   return (uint32_t)(*seed >> 32);
 }
 
+#if 0
 static inline long long hrd_get_cycles() {
   unsigned low, high;
   unsigned long long val;
@@ -217,6 +231,7 @@ static inline long long hrd_get_cycles() {
   val = (val << 32) | low;
   return val;
 }
+#endif
 
 static inline int hrd_is_power_of_2(uint32_t n) { return n && !(n & (n - 1)); }
 

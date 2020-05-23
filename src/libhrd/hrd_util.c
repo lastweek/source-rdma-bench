@@ -254,6 +254,7 @@ void hrd_red_printf(const char* format, ...) {
   va_end(args);
 }
 
+#if 0
 void hrd_nano_sleep(int ns) {
   long long start = hrd_get_cycles();
   long long end = start;
@@ -262,6 +263,7 @@ void hrd_nano_sleep(int ns) {
     end = hrd_get_cycles();
   }
 }
+#endif
 
 /* Get the LID of a port on the device specified by @ctx */
 uint16_t hrd_get_local_lid(struct ibv_context* ctx, int dev_port_id) {

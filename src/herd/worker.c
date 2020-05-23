@@ -2,12 +2,6 @@
 #include "main.h"
 #include "mica.h"
 
-/*
- * HACK XXX
- * there is another on at ../libhrd/hrd_conn.c
- */
-#define SGID_INDEX 1
-
 void* run_worker(void* arg) {
   int i, ret;
   struct thread_params params = *(struct thread_params*)arg;
@@ -83,23 +77,24 @@ void* run_worker(void* arg) {
      */
     struct ibv_ah_attr ah_attr = {
 
-        //.is_global = 0,
-        .is_global = 1,
-
-        //.dlid = clt_qp[i]->lid,
-        .dlid = 0,
-
         .sl = 0,
         .src_path_bits = 0,
 
         /* port_num (> 1): device-local port for responses to this client */
         .port_num = local_port_i + 1,
 
+#ifdef LINK_MODE_ROCE
+        .is_global = 1,
+        .dlid = 0,
 	.grh = {
 		.dgid = clt_qp[i]->remote_gid,
 		.sgid_index = SGID_INDEX,
 		.hop_limit = 255,
 	},
+#else
+        .is_global = 0,
+        .dlid = clt_qp[i]->lid,
+#endif
     };
 
     fprintf(stderr, "GID: Interface id = %lld subnet prefix = %lld\n",
