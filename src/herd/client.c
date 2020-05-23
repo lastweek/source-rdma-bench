@@ -100,6 +100,8 @@ void* run_client(void* arg) {
   struct mica_op* req_buf = memalign(4096, sizeof(*req_buf));
   assert(req_buf != NULL);
 
+  struct ibv_mr *key_mr = ibv_reg_mr(cb->pd, req_buf, sizeof(struct mica_op), IBV_ACCESS_LOCAL_WRITE);
+
   struct ibv_send_wr wr, *bad_send_wr;
   struct ibv_sge sgl;
   struct ibv_wc wc[WINDOW_SIZE];
@@ -161,7 +163,9 @@ void* run_client(void* arg) {
     }
 
     if (nb_tx % WINDOW_SIZE == 0 && nb_tx > 0) {
+	    printf("%s %d before \n", __func__, __LINE__);
       hrd_poll_cq(cb->dgram_recv_cq[0], WINDOW_SIZE, wc);
+	    printf("%s %d after \n", __func__, __LINE__);
     }
 
     wn = hrd_fastrand(&seed) % NUM_WORKERS; /* Choose a worker */
@@ -180,6 +184,7 @@ void* run_client(void* arg) {
     /* Forge the RDMA work request */
     sgl.length = is_update ? HERD_PUT_REQ_SIZE : HERD_GET_REQ_SIZE;
     sgl.addr = (uint64_t)(uintptr_t)req_buf;
+    sgl.lkey = key_mr->lkey;
 
     wr.opcode = IBV_WR_RDMA_WRITE;
     wr.num_sge = 1;
@@ -188,7 +193,9 @@ void* run_client(void* arg) {
 
     wr.send_flags = (nb_tx & UNSIG_BATCH_) == 0 ? IBV_SEND_SIGNALED : 0;
     if ((nb_tx & UNSIG_BATCH_) == UNSIG_BATCH_) {
+	    printf("%s %d before \n", __func__, __LINE__);
       hrd_poll_cq(cb->conn_cq[0], 1, wc);
+	    printf("%s %d after \n", __func__, __LINE__);
     }
 
     // Why always INLINE??? XXX

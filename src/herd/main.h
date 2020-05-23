@@ -20,7 +20,7 @@
 //#define HERD_NUM_KEYS (8 * 1024 * 1024)
 #define HERD_NUM_KEYS (10000)
 
-#define HERD_VALUE_SIZE  16
+#define HERD_VALUE_SIZE  256
 
 /* Request sizes */
 #define HERD_GET_REQ_SIZE (16 + 1) /* 16 byte key + opcode */
@@ -45,7 +45,7 @@
 
 /* SHM key for the 1st request region created by master. ++ for other RRs.*/
 #define MASTER_SHM_KEY 24
-#define RR_SIZE (16 * 1024 * 1024) /* Request region size */
+#define RR_SIZE (32 * 1024 * 1024) /* Request region size */
 #define OFFSET(wn, cn, ws) \
   ((wn * NUM_CLIENTS * WINDOW_SIZE) + (cn * WINDOW_SIZE) + ws)
 
