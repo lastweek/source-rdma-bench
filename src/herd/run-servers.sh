@@ -5,9 +5,9 @@ function blue() {
 	echo "${es}$1${ee}"
 }
 
-export HRD_REGISTRY_IP="137.110.222.245"
+export HRD_REGISTRY_IP="128.46.115.102"
 export MLX5_SINGLE_THREADED=1
-export MLX4_SINGLE_THREADED=1
+#export MLX4_SINGLE_THREADED=1
 
 blue "Removing SHM key 24 (request region hugepages)"
 sudo ipcrm -M 24
@@ -20,16 +20,16 @@ for i in `seq 0 28`; do
 	sudo ipcrm -M $key 2>/dev/null
 done
 
-blue "Reset server QP registry"
-sudo pkill memcached
-memcached -u root -l 0.0.0.0 -I 128m -m 2048 1>/dev/null 2>/dev/null &
-sleep 1
+#blue "Reset server QP registry"
+#sudo pkill memcached
+#memcached -u root -l 0.0.0.0 -I 128m -m 2048 1>/dev/null 2>/dev/null &
+#sleep 1
 
 blue "Starting master process"
 sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--master 1 \
-	--base-port-index 0 \
+	--base-port-index 1 \
 	--num-server-ports 1 &
 
 # Give the master process time to create and register per-port request regions
@@ -39,6 +39,6 @@ blue "Starting worker threads"
 sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--is-client 0 \
-	--base-port-index 0 \
+	--base-port-index 1 \
 	--num-server-ports 1 \
 	--postlist 1

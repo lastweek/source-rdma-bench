@@ -231,7 +231,7 @@ void* run_worker(void* arg) {
       if ((nb_tx[cb_i][ud_qp_i] & UNSIG_BATCH_) == UNSIG_BATCH_) {
         hrd_poll_cq(cb[cb_i]->dgram_send_cq[ud_qp_i], 1, &wc);
       }
-      wr[wr_i].send_flags |= IBV_SEND_INLINE;
+      //wr[wr_i].send_flags |= IBV_SEND_INLINE;
 
       HRD_MOD_ADD(ws[clt_i], WINDOW_SIZE);
 

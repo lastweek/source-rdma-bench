@@ -131,7 +131,11 @@ struct ibv_device* hrd_resolve_port_index(struct hrd_ctrl_blk* cb,
 
 /* Allocate SHM with @shm_key, and save the shmid into @shm_id_ret */
 void* hrd_malloc_socket(int shm_key, int size, int socket_id) {
-  int shmid = shmget(shm_key, size, IPC_CREAT | IPC_EXCL | 0666 | SHM_HUGETLB);
+
+  int shmid = shmget(shm_key, size, IPC_CREAT | IPC_EXCL | 0666);
+
+  printf("%s: shm_key %d size %d B sockt_id %d\n", __func__, shm_key, size, socket_id);
+
   if (shmid == -1) {
     switch (errno) {
       case EACCES:
@@ -173,9 +177,12 @@ void* hrd_malloc_socket(int shm_key, int size, int socket_id) {
   }
 
   /* Bind the buffer to this socket */
+  printf("%s: shm_key %d size %d B sockt_id %d buf %#lx\n", __func__, shm_key, size, socket_id, buf);
+
   const unsigned long nodemask = (1 << socket_id);
   int ret = mbind(buf, size, MPOL_BIND, &nodemask, 32, 0);
   if (ret != 0) {
+    perror("mbin");
     printf("HRD: SHM malloc error. mbind() failed for key %d\n", shm_key);
     exit(-1);
   }

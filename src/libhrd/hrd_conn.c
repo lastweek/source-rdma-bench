@@ -125,6 +125,7 @@ struct hrd_ctrl_blk* hrd_ctrl_blk_init(
       }
 
       /* SHM key 0 is hard to free later */
+      printf("%s:%d\n", __func__, __LINE__);
       assert(dgram_buf_shm_key >= 1 && dgram_buf_shm_key <= 128);
       cb->dgram_buf = (volatile uint8_t*)hrd_malloc_socket(
           dgram_buf_shm_key, reg_size, numa_node_id);
@@ -168,6 +169,8 @@ struct hrd_ctrl_blk* hrd_ctrl_blk_init(
 
         /* SHM key 0 is hard to free later */
         assert(conn_buf_shm_key >= 1 && conn_buf_shm_key <= 128);
+
+        printf("%s:%d\n", __func__, __LINE__);
         cb->conn_buf = (volatile uint8_t*)hrd_malloc_socket(
             conn_buf_shm_key, reg_size, numa_node_id);
       } else {
