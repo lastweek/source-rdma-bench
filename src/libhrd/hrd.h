@@ -48,7 +48,7 @@
  * Small max_inline_data reduces the QP's max WQE size, which reduces the
  * DMA size in doorbell method of WQE fetch.
  */
-#define HRD_MAX_INLINE 256
+#define HRD_MAX_INLINE 60
 
 /* Useful when `x = (x + 1) % N` is done in a loop */
 #define HRD_MOD_ADD(x, N) \

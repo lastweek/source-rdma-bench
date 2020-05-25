@@ -20,7 +20,7 @@
 //#define HERD_NUM_KEYS (8 * 1024 * 1024)
 #define HERD_NUM_KEYS (10000)
 
-#define HERD_VALUE_SIZE  256
+#define HERD_VALUE_SIZE  32
 
 /* Request sizes */
 #define HERD_GET_REQ_SIZE (16 + 1) /* 16 byte key + opcode */
@@ -31,9 +31,9 @@
 /* Configuration options */
 #define MAX_SERVER_PORTS 2
 
-#define NUM_WORKERS 12
+#define NUM_WORKERS 2
 
-#define NUM_CLIENTS 8
+#define NUM_CLIENTS 2
 
 /* Performance options */
 #define WINDOW_SIZE 1 /* Outstanding requests kept by each client */

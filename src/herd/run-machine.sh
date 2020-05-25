@@ -5,7 +5,7 @@ function blue() {
 	echo "${es}$1${ee}"
 }
 
-export HRD_REGISTRY_IP="137.110.222.243"
+export HRD_REGISTRY_IP="128.46.115.102"
 export MLX5_SINGLE_THREADED=1
 export MLX4_SINGLE_THREADED=1
 
@@ -18,14 +18,14 @@ fi
 blue "Removing hugepages"
 shm-rm.sh 1>/dev/null 2>/dev/null
 
-num_threads=8		# Threads per client machine
+num_threads=2		# Threads per client machine
 
 blue "Running $num_threads client threads"
 
 sudo LD_LIBRARY_PATH=/usr/local/lib/ -E \
 	numactl --cpunodebind=0 --membind=0 ./main \
 	--num-threads $num_threads \
-	--base-port-index 0 \
+	--base-port-index 1 \
 	--num-server-ports 1 \
 	--num-client-ports 1 \
 	--is-client 1 \

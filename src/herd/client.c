@@ -184,7 +184,7 @@ void* run_client(void* arg) {
     /* Forge the RDMA work request */
     sgl.length = is_update ? HERD_PUT_REQ_SIZE : HERD_GET_REQ_SIZE;
     sgl.addr = (uint64_t)(uintptr_t)req_buf;
-    sgl.lkey = key_mr->lkey;
+    //sgl.lkey = key_mr->lkey;
 
     wr.opcode = IBV_WR_RDMA_WRITE;
     wr.num_sge = 1;
@@ -193,13 +193,13 @@ void* run_client(void* arg) {
 
     wr.send_flags = (nb_tx & UNSIG_BATCH_) == 0 ? IBV_SEND_SIGNALED : 0;
     if ((nb_tx & UNSIG_BATCH_) == UNSIG_BATCH_) {
-	    printf("%s %d before \n", __func__, __LINE__);
+	    printf("%s %d before poll send_cq\n", __func__, __LINE__);
       hrd_poll_cq(cb->conn_cq[0], 1, wc);
-	    printf("%s %d after \n", __func__, __LINE__);
+	    printf("%s %d after poll send_cq \n", __func__, __LINE__);
     }
 
     // Why always INLINE??? XXX
-    //wr.send_flags |= IBV_SEND_INLINE;
+    wr.send_flags |= IBV_SEND_INLINE;
 
     wr.wr.rdma.remote_addr = mstr_qp->buf_addr + OFFSET(wn, clt_gid, ws[wn]) *
                                                      sizeof(struct mica_op);
